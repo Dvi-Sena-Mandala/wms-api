@@ -51,6 +51,24 @@ class CheckInController extends Controller
         return new CheckInResource($checkin);
     }
 
+    public function get(int $checkin_id): CheckInResource
+    {
+        $user = Auth::user();
+        $checkin = CheckIn::where('user_id', $user->id)->where('id', $checkin_id)->first();
+
+        if (!$checkin) {
+            throw new HttpResponseException(response()->json([
+                "errors" => [
+                    "message" => [
+                        "Checkin data not found"
+                    ]
+                ]
+            ])->setStatusCode(404));
+        }
+
+        return new CheckInResource($checkin);
+    }
+
     public function list(): JsonResponse
     {
         $user = Auth::user();
