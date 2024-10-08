@@ -10,4 +10,5 @@ Route::post("/users/login", [UserController::class, "login"]);
 
 Route::middleware(ApiAuthMiddleware::class)->group(function () {
     Route::post("/checkin", [CheckInController::class, 'create']);
+    Route::get("/checkin", [CheckInController::class, 'list']);
 });

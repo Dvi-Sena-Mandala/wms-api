@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CheckInRequest;
 use App\Http\Resources\CheckInResource;
 use App\Models\CheckIn;
+use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -47,5 +49,13 @@ class CheckInController extends Controller
         $checkin->save();
 
         return new CheckInResource($checkin);
+    }
+
+    public function list(): JsonResponse
+    {
+        $user = Auth::user();
+        $listCheckIn = CheckIn::where('user_id', $user->id)->get();
+
+        return CheckInResource::collection($listCheckIn)->response()->setStatusCode(200);
     }
 }
