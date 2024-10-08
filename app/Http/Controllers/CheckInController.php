@@ -7,6 +7,7 @@ use App\Http\Resources\CheckInResource;
 use App\Models\CheckIn;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 use function Illuminate\Log\log;
@@ -16,6 +17,7 @@ class CheckInController extends Controller
     public function create(CheckInRequest $request): CheckInResource
     {
         $data = $request->validated();
+        $user = Auth::user();
 
         $checkin = new CheckIn($data);
 
@@ -40,6 +42,7 @@ class CheckInController extends Controller
         $checkin->image_front_truck = $image_front_truck_path;
 
         $checkin->document_type = $docType;
+        $checkin->user_id = $user->id;
 
         $checkin->save();
 

@@ -21,10 +21,8 @@ return new class extends Migration
             $table->enum('document_type', array('SO', 'PO', 'TM', 'IN', 'OUT'))->nullable();
             $table->string('image_identity_card', 100)->nullable(false);
             $table->string('image_front_truck', 100)->nullable(false);
-            // $table->unsignedBigInteger("user_id")->nullable(false);
+            $table->foreignId("user_id")->constrained(table: 'users')->cascadeOnDelete();
             $table->datetimes();
-
-            // $table->foreign("user_id")->on("users")->references("id");
         });
     }
 
