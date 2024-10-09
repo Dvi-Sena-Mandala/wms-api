@@ -15,6 +15,7 @@ class CheckInResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'no_document' => $this->no_document,
             'kuantum' => $this->kuantum,
             'driver_name' => $this->driver_name,
@@ -22,8 +23,8 @@ class CheckInResource extends JsonResource
             'container_number' => $this->container_number,
             'document_type' => $this->document_type,
             'images' => [
-                'image_identity_card' => $this->image_identity_card,
-                'image_front_truck' => $this->image_front_truck,
+                'identity_card' => $this->image_identity_card,
+                'front_truck' => $this->image_front_truck,
             ]
         ];
     }
