@@ -6,6 +6,7 @@ use App\Http\Requests\CheckInRequest;
 use App\Http\Resources\CheckInResource;
 use App\Models\CheckIn;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -75,5 +76,34 @@ class CheckInController extends Controller
         $listCheckIn = CheckIn::where('user_id', $user->id)->get();
 
         return CheckInResource::collection($listCheckIn)->response()->setStatusCode(200);
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+        $checkins = CheckIn::where('user_id', $user->id);
+
+        $checkins = $checkins->where(function (Builder $builder) use ($request) {
+            $no_ducument = $request->input("no_ducument");
+            if ($no_ducument) {
+                $builder->where("no_document", "like", "%" . $no_ducument . "%");
+            }
+            $document_type = $request->input("document_type");
+            if ($document_type) {
+                $builder->where("document_type", "like", "%" . $document_type . "%");
+            }
+            $driver_name = $request->input("driver_name");
+            if ($driver_name) {
+                $builder->where("driver_name", "like", "%" . $driver_name . "%");
+            }
+            $vehicle_plat = $request->input("vehicle_plat");
+            if ($vehicle_plat) {
+                $builder->where("vehicle_plat", "like", "%" . $vehicle_plat . "%");
+            }
+        });
+
+        $checkins = $checkins->get();
+
+        return  CheckInResource::collection($checkins)->response()->setStatusCode(200);
     }
 }
