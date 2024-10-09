@@ -11,6 +11,9 @@ Route::post("/users/login", [UserController::class, "login"]);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post("/checkin", [CheckInController::class, 'create']);
     Route::get("/checkin", [CheckInController::class, 'search']);
-    Route::get("/checkin/list", [CheckInController::class, 'list']);
+    Route::delete("/checkin/{id}", [CheckInController::class, 'delete'])->where('id', '[0-9]+');
+    Route::put("/checkin/{id}", [CheckInController::class, 'update'])->where('id', '[0-9]+');
+    Route::post("/checkin/{id}", [CheckInController::class, 'update'])->where('id', '[0-9]+');
     Route::get("/checkin/{id}", [CheckInController::class, 'get'])->where('id', '[0-9]+');
+    Route::get("/checkin/list", [CheckInController::class, 'list']);
 });

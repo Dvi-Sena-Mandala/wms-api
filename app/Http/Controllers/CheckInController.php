@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckInRequest;
+use App\Http\Requests\CheckInUpdateRequest;
 use App\Http\Resources\CheckInResource;
 use App\Models\CheckIn;
 use App\Models\User;
@@ -105,5 +106,66 @@ class CheckInController extends Controller
         $checkins = $checkins->get();
 
         return  CheckInResource::collection($checkins)->response()->setStatusCode(200);
+    }
+
+    public function update(int $id, CheckInUpdateRequest $request): CheckInResource
+    {
+        $user = Auth::user();
+        $checkin = CheckIn::where('user_id', $user->id)->where('id', $id)->first();
+
+        if (!$checkin) {
+            throw new HttpResponseException(response()->json([
+                "errors" => [
+                    "message" => [
+                        "Checkin data not found"
+                    ]
+                ]
+            ])->setStatusCode(404));
+        }
+
+        $data = $request->validated();
+
+        $checkin->fill($data);
+        $docType = explode('/', $checkin->no_document)[0];
+
+        Log::info("doctype ->" . $docType);
+        if ($request->hasFile('image_identity_card')) {
+            $image_identity_card_path = $request->file('image_identity_card')->store('images', 'public');
+            $checkin->image_identity_card = $image_identity_card_path;
+        }
+
+        if ($request->hasFile('image_front_truck')) {
+            $image_front_truck_path = $request->file('image_front_truck')->store('images', 'public');
+            $checkin->image_front_truck = $image_front_truck_path;
+        }
+
+        $checkin->document_type = $docType;
+        $checkin->save();
+
+        return new CheckInResource($checkin);
+    }
+
+    public function delete(int $id): JsonResponse
+    {
+        $user = Auth::user();
+        $checkin = CheckIn::where('user_id', $user->id)->where('id', $id)->first();
+
+        if (!$checkin) {
+            throw new HttpResponseException(response()->json([
+                "errors" => [
+                    "message" => [
+                        "Checkin data not found"
+                    ]
+                ]
+            ])->setStatusCode(404));
+        }
+
+        $checkin->delete();
+
+        return response()->json([
+            'data' => [
+                'message' => 'CheckIn data with id: ' . $id . ' deleted successfully.'
+            ]
+        ]);
     }
 }
