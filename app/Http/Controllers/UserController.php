@@ -49,7 +49,7 @@ class UserController extends Controller
             ], 401));
         }
 
-        $user->token = Str::uuid()->toString();
+        $user->token = $user->createToken($user->username)->plainTextToken;
         $user->save();
 
         Log::debug("Login route api");

@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Route;
 Route::post("/users", [UserController::class, "register"]);
 Route::post("/users/login", [UserController::class, "login"]);
 
-Route::middleware(ApiAuthMiddleware::class)->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post("/checkin", [CheckInController::class, 'create']);
-    Route::get("/checkin", [CheckInController::class, 'list']);
+    Route::get("/checkin", [CheckInController::class, 'findByNoDocument']);
+    Route::get("/checkin/list", [CheckInController::class, 'list']);
     Route::get("/checkin/{id}", [CheckInController::class, 'get'])->where('id', '[0-9]+');
 });
