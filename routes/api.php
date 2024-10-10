@@ -18,4 +18,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get("/checkin/list", [CheckInController::class, 'list']);
 
     Route::post('/checkout', [CheckOutController::class, 'create']);
+    Route::get('/checkout/list', [CheckOutController::class, 'list']);
 });

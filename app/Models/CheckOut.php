@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Database\Eloquent\Model;
 
 class CheckOut extends Model
@@ -22,5 +22,9 @@ class CheckOut extends Model
     public function checkin()
     {
         return $this->hasOne(CheckIn::class, 'checkin_id', 'id');
+    }
+    public function users()
+    {
+        return $this->hasOne(User::class, 'user_id', 'id');
     }
 }

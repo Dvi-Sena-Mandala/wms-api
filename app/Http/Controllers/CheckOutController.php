@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckOutRequest;
+use App\Http\Requests\CheckOutUpdateRequest;
 use App\Http\Resources\CheckOutResource;
 use App\Models\CheckIn;
 use App\Models\CheckOut;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -42,6 +44,8 @@ class CheckOutController extends Controller
             ], 400));
         }
 
+        $checkout->user_id = $user->id;
+
         // handle upload image and save the path to db
         $image_front_truck_path = $request->file('image_front_truck')->store('images', 'public');
         $image_rear_truck_path = $request->file('image_rear_truck')->store('images', 'public');
@@ -57,4 +61,26 @@ class CheckOutController extends Controller
 
         return new CheckOutResource($checkout);
     }
+
+    public function get(int $checkout_id): CheckOutResource
+    {
+        $user = Auth::user();
+        $checkout = CheckOut::where('user_id', $user->id)
+            ->where('id', $checkout_id)
+            ->first();
+
+        Log::info($checkout);
+
+        if (!$checkout) {
+            throw new HttpResponseException(response()->json([
+                "errors" => [
+                    "message" => [
+                        "CheckOut data not found"
+                    ]
+                ]
+            ])->setStatusCode(404));
+        }
+        return new CheckOutResource($checkout);
+    }
+
 }

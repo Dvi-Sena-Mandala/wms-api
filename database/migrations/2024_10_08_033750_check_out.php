@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('image_front_truck', 100)->nullable(false);
             $table->string('image_rear_truck', 100)->nullable(false);
             $table->foreignId("checkin_id")->constrained(table: 'checkin')->cascadeOnDelete();
+            $table->foreignId("user_id")->constrained(table: 'users')->cascadeOnDelete();
             $table->datetimes();
         });
     }
