@@ -117,4 +117,37 @@ class CheckOutController extends Controller
         return new CheckOutResource($checkout);
     }
 
+    public function list(): JsonResponse
+    {
+        $user = Auth::user();
+        $checkouts = CheckOut::where('user_id', $user->id)->get();
+
+        return CheckOutResource::collection($checkouts)->response()->setStatusCode(200);
+    }
+
+    public function delete(int $id): JsonResponse
+    {
+        $user = Auth::user();
+        $checkout = CheckOut::where('user_id', $user->id)
+            ->where('id', $id)
+            ->first();
+
+        if (!$checkout) {
+            throw new HttpResponseException(response()->json([
+                "errors" => [
+                    "message" => [
+                        "CheckOut data not found"
+                    ]
+                ]
+            ])->setStatusCode(404));
+        }
+
+        $checkout->delete();
+
+        return response()->json([
+            'data' => [
+                'message' => 'CheckOut data with id: ' . $id . ' deleted successfully.'
+            ]
+        ]);
+    }
 }

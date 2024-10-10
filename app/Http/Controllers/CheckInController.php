@@ -14,8 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-use function Illuminate\Log\log;
-
 class CheckInController extends Controller
 {
     public function create(CheckInRequest $request): CheckInResource

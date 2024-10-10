@@ -19,5 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/checkout', [CheckOutController::class, 'create']);
     Route::get('/checkout/list', [CheckOutController::class, 'list']);
+    Route::get("/checkout/{id}", [CheckOutController::class, 'get'])->where('id', '[0-9]+');
     Route::put("/checkout/{id}", [CheckOutController::class, 'update'])->where('id', '[0-9]+');
+    Route::delete("/checkout/{id}", [CheckOutController::class, 'delete'])->where('id', '[0-9]+');
 });
