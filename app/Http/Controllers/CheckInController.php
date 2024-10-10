@@ -6,7 +6,6 @@ use App\Http\Requests\CheckInRequest;
 use App\Http\Requests\CheckInUpdateRequest;
 use App\Http\Resources\CheckInResource;
 use App\Models\CheckIn;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
