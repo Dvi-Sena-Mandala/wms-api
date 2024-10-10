@@ -25,10 +25,12 @@ class CheckInController extends Controller
 
         $checkin = new CheckIn($data);
 
-        if (CheckIn::where('no_document', $checkin->no_document)->exists()) {
+        /// if nomor document allready exist and the checkpoint is not checkout
+        /// the new data cannot be created
+        if (CheckIn::where('no_document', $checkin->no_document)->exists() && CheckIn::where('checkpoint', $checkin->checkpoint) != 'CHECKOUT') {
             throw new HttpResponseException(response([
                 "errors" => [
-                    "no_document" => ["No Document Allready Check In"]
+                    "message" => ["The Document allready exist & has not been checkout yet"]
                 ]
             ], 400));
         }
