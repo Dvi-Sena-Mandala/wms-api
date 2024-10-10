@@ -14,12 +14,9 @@ return new class extends Migration
         Schema::create('checkout', function (Blueprint $table) {
             $table->id();
             $table->string('image_front_truck', 100)->nullable(false);
-            $table->string('image_fear_truck', 100)->nullable(false);
-            $table->unsignedBigInteger("checkin_id")->nullable(false);
+            $table->string('image_rear_truck', 100)->nullable(false);
+            $table->foreignId("checkin_id")->constrained(table: 'checkin')->cascadeOnDelete();
             $table->datetimes();
-
-
-            $table->foreign('checkin_id')->references('id')->on('checkin');
         });
     }
 

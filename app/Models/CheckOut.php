@@ -14,6 +14,7 @@ class CheckOut extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'checkin_id',
         'image_rear_truck',
         'image_front_truck'
     ];

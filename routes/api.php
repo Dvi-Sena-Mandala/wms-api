@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\CheckInController;
+use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\ApiAuthMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::post("/users", [UserController::class, "register"]);
@@ -16,4 +16,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post("/checkin/{id}", [CheckInController::class, 'update'])->where('id', '[0-9]+');
     Route::get("/checkin/{id}", [CheckInController::class, 'get'])->where('id', '[0-9]+');
     Route::get("/checkin/list", [CheckInController::class, 'list']);
+
+    Route::post('/checkout', [CheckOutController::class, 'create']);
 });
