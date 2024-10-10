@@ -83,4 +83,38 @@ class CheckOutController extends Controller
         return new CheckOutResource($checkout);
     }
 
+    public function update(int $checkout_id, CheckOutUpdateRequest $request): CheckOutResource
+    {
+        $user = Auth::user();
+        $checkout = CheckOut::where('user_id', $user->id)
+            ->where('id', $checkout_id)
+            ->first();
+
+        if (!$checkout) {
+            throw new HttpResponseException(response()->json([
+                "errors" => [
+                    "message" => [
+                        "CheckOut data not found"
+                    ]
+                ]
+            ])->setStatusCode(404));
+        }
+        $data = $request->validated();
+
+        Log::info($data);
+        $checkout->fill($data);
+        if ($request->hasFile('image_front_truck')) {
+            $image_front_truck_path = $request->file('image_front_truck')->store('images', 'public');
+            $checkout->image_front_truck = $image_front_truck_path;
+        }
+
+        if ($request->hasFile('image_rear_truck')) {
+            $image_rear_truck_path = $request->file('image_rear_truck')->store('images', 'public');
+            $checkout->image_rear_truck = $image_rear_truck_path;
+        }
+        $checkout->save();
+
+        return new CheckOutResource($checkout);
+    }
+
 }

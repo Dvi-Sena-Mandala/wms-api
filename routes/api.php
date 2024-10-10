@@ -19,4 +19,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/checkout', [CheckOutController::class, 'create']);
     Route::get('/checkout/list', [CheckOutController::class, 'list']);
+    Route::put("/checkout/{id}", [CheckOutController::class, 'update'])->where('id', '[0-9]+');
 });
