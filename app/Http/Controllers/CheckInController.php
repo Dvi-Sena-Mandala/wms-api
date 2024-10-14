@@ -107,7 +107,7 @@ class CheckInController extends Controller
         return  CheckInResource::collection($checkins)->response()->setStatusCode(200);
     }
 
-    public function update(int $id, CheckInUpdateRequest $request): CheckInResource
+    public function update(int $id, Request $request): JsonResponse
     {
         $user = Auth::user();
         $checkin = CheckIn::where('user_id', $user->id)->where('id', $id)->first();
@@ -122,7 +122,17 @@ class CheckInController extends Controller
             ])->setStatusCode(404));
         }
 
-        $data = $request->validated();
+        $data = $request->validate([
+            'no_document' => 'nullable|string|max:20',
+            'kuantum' => 'nullable|numeric',
+            'driver_name' => 'nullable|string|max:50',
+            'vehicle_plat' => 'nullable|string|max:10',
+            'container_number' => 'nullable|string|max:20',
+            'document_type' => 'nullable|string|max:3',
+            'image_identity_card' => 'nullable|image',
+            'image_front_truck' => 'nullable|image',
+        ]);
+        Log::info("req ->" . json_encode($data));
 
         $checkin->fill($data);
         $docType = explode('/', $checkin->no_document)[0];
@@ -141,7 +151,21 @@ class CheckInController extends Controller
         $checkin->document_type = $docType;
         $checkin->save();
 
-        return new CheckInResource($checkin);
+        return response()->json([
+            'data' => [
+                'id' => $checkin->id,
+                'no_document' => $checkin->no_document,
+                'kuantum' => $checkin->kuantum,
+                'driver_name' => $checkin->driver_name,
+                'vehicle_plat' => $checkin->vehicle_plat,
+                'container_number' => $checkin->container_number,
+                'document_type' => $checkin->document_type,
+                'images' => [
+                    'identity_card' => $checkin->image_identity_card,
+                    'front_truck' => $checkin->image_front_truck,
+                ]
+            ]
+        ]);
     }
 
     public function delete(int $id): JsonResponse
