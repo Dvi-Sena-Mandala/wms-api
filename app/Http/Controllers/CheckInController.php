@@ -132,7 +132,8 @@ class CheckInController extends Controller
             'image_identity_card' => 'nullable|image',
             'image_front_truck' => 'nullable|image',
         ]);
-        Log::info("req ->" . json_encode($data));
+        Log::info("req ->" . json_encode($request->request));
+        Log::info("req data->" . json_encode($data));
 
         $checkin->fill($data);
         $docType = explode('/', $checkin->no_document)[0];
